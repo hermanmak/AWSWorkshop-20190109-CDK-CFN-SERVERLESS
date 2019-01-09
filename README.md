@@ -8,7 +8,7 @@ This workshop is intended to demonstrate the use of AWS CloudDevelopmentKit, her
 One of major reasons for unforseen outages and customer impacting issues is due to lack of change management.
 
 #### Pre-reqs
-1. An personal AWS Account
+1. A **personal** AWS Account
 
 ## Step 0 - Setup a clean development environment
 Since everyone has their own preconfigured laptops with their own customized development environments, things could get pretty messy. So, lets use AWS Cloud9 for the sake of this lab, AWS Cloud9 provides a hosted IDE to write, run and debug code.
