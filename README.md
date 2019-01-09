@@ -11,10 +11,14 @@ One of major reasons for unforseen outages and customer impacting issues is due 
 1. A **personal** AWS Account
 
 ## Step 0 - Setup a clean development environment
-Since everyone has their own preconfigured laptops with their own customized development environments, things could get pretty messy. So, lets use AWS Cloud9 for the sake of this lab, AWS Cloud9 provides a hosted IDE to write, run and debug code.
+Since everyone has their own preconfigured laptops with their own customized development environments, things could get pretty messy. So, lets use AWS Cloud9 for the sake of this lab, AWS Cloud9 provides a hosted IDE to write, run and debug code. It also comes with awscli preinstalled!
 
 1. In the console, the Services button in the top left will reveal a dropdown with all the services.
 2. Find or search for **Cloud9**.
 3. In the middle right click **Create Environment**.
 4. Give the Cloud9 environment a name and leave everything else as standard, create your environment.
-5. 
+5. In the bottom there is a terminal, lets initalize the CDK
+    ```
+    cdk init --language LANGUAGE
+    ```
+
