@@ -7,4 +7,5 @@ This workshop is intended to demonstrate the use of AWS CloudDevelopmentKit, her
 ### Why should I use AWS CDK, or infrastructure as code?!?!
 One of major reasons for unforseen outages and customer impacting issues is due to lack of change management.
 
-
+## Step 0 - Setup a clean development environment
+Since everyone has their own preconfigured laptops with their own customized development environements, things could get pretty messy. So, lets use AWS Cloud9 for the sake of this lab.
