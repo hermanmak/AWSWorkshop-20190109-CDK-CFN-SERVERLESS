@@ -19,8 +19,9 @@ Since everyone has their own preconfigured laptops with their own customized dev
 4. Give the Cloud9 environment a name (for example *cdk-cfn-demo-env*) and leave everything else as standard, create your environment.
 5. In the bottom there is a terminal, lets install and initalize the CDK
     ```
-    nvm install node --latest-npm --reinstall-packages-from=node
-    npm install -g npm
+    nvm update --lts node
+    nvm update node
+    nvm update npm
     npm install -g aws-cdk
     cdk --version
     ```
