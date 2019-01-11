@@ -16,9 +16,14 @@ Since everyone has their own preconfigured laptops with their own customized dev
 1. In the console, the Services button in the top left will reveal a dropdown with all the services.
 2. Find or search for **Cloud9**.
 3. In the middle right click **Create Environment**.
-4. Give the Cloud9 environment a name and leave everything else as standard, create your environment.
-5. In the bottom there is a terminal, lets initalize the CDK
+4. Give the Cloud9 environment a name (for example *cdkcfndemolab*) and leave everything else as standard, create your environment.
+5. In the bottom there is a terminal, lets install and initalize the CDK
     ```
-    cdk init --language LANGUAGE
+    nvm install node --latest-npm --reinstall-packages-from=node
+    npm install -g npm
+    npm install -g aws-cdk
+    cdk --version
     ```
+    
+## Step 1 - Start building your CDK
 
