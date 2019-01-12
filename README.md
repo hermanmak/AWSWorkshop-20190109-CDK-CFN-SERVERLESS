@@ -62,6 +62,7 @@ Since everyone has their own preconfigured laptops with their own customized dev
 4. Install S3
     ```
     npm install @aws-cdk/aws-s3
+    cdk synth --app index.js > ./cfn.yml
     ```
 
 
