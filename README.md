@@ -23,19 +23,27 @@ Since everyone has their own preconfigured laptops with their own customized dev
     nvm update npm
     npm install -g aws-cdk
     cdk --version
-    sudo yum -y install java-1.8.0-openjdk-devel
-    sudo update-alternatives --config java
-    sudo update-alternatives --config javac
-    java -version
-    javac -version
-    mvn -version
-    sudo wget http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
-    sudo sed -i s/\$releasever/6/g /etc/yum.repos.d/epel-apache-maven.repo
-    sudo yum install -y apache-maven
-    
+
     cd cdk-cfn-demo-env
-    cdk init --language java
+    npm init -y
+    npm install @aws-cdk/cdk
     ```
     
-## Step 1 - Start building your CDK
+## Step 1 - Start building our cdk template
+1. Make our main App file
+    ```
+    mkdir bin
+    touch hello-cdk.js
+    ```
+2. Open the hello-cdk.js file and paste the following:
+    ```
+    class MyApp extends cdk.App {
+        constructor() {
+            super();
+        }
+    }
+
+    new MyApp().run();
+    ```
+
 
