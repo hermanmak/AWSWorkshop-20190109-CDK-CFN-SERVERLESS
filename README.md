@@ -32,18 +32,36 @@ Since everyone has their own preconfigured laptops with their own customized dev
 ## Step 1 - Start building our cdk template
 1. Make our main App file
     ```
-    mkdir bin
-    touch hello-cdk.js
+    touch index.js
     ```
-2. Open the hello-cdk.js file and paste the following:
+2. Open the index.js file and paste the following:
     ```
+    const cdk = require('@aws-cdk/cdk');
+
+    class MyStack extends cdk.Stack {
+        constructor(parent, id, props) {
+            super(parent, id, props);
+        }
+    }
+
     class MyApp extends cdk.App {
-        constructor() {
-            super();
+        constructor(argv) {
+            super(argv);
+
+            new MyStack(this, 'hello-cdk');
         }
     }
 
     new MyApp().run();
+    ```
+3. Install ApiGateway
+    ```
+    npm i @aws-cdk/aws-apigateway@0.22.0
+    ```
+    
+4. Install S3
+    ```
+    npm install @aws-cdk/aws-s3
     ```
 
 
