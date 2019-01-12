@@ -19,11 +19,22 @@ Since everyone has their own preconfigured laptops with their own customized dev
 4. Give the Cloud9 environment a name (for example *cdk-cfn-demo-env*) and leave everything else as standard, create your environment.
 5. In the bottom there is a terminal, lets install and initalize the CDK
     ```
-    nvm update --lts node
-    nvm update node
+    nvm install --lts
     nvm update npm
     npm install -g aws-cdk
     cdk --version
+    sudo yum -y install java-1.8.0-openjdk-devel
+    sudo update-alternatives --config java
+    sudo update-alternatives --config javac
+    java -version
+    javac -version
+    mvn -version
+    sudo wget http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo -O /etc/yum.repos.d/epel-apache-maven.repo
+    sudo sed -i s/\$releasever/6/g /etc/yum.repos.d/epel-apache-maven.repo
+    sudo yum install -y apache-maven
+    
+    cd cdk-cfn-demo-env
+    cdk init --language java
     ```
     
 ## Step 1 - Start building your CDK
