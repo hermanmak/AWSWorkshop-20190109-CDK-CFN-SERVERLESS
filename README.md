@@ -25,34 +25,60 @@ Since everyone has their own preconfigured laptops with their own customized dev
     cdk --version
 
     cd cdk-cfn-demo-env
-    npm init -y
-    npm install @aws-cdk/cdk
+    cdk init --language typescript
     ```
     
 ## Step 1 - Start building our cdk template
 1. Make our main App file
     ```
-    touch index.js
+    mkdir resources
+    touch widgets.js
     ```
-2. Open the index.js file and paste the following:
+2. Open the widgets.js file and paste the following:
     ```
-    const cdk = require('@aws-cdk/cdk');
+    const AWS = require('aws-sdk');
+    const S3 = new AWS.S3();
 
-    class MyStack extends cdk.Stack {
-        constructor(parent, id, props) {
-            super(parent, id, props);
+    const bucketName = process.env.BUCKET;
+
+    exports.main = async function(event, context) {
+      try {
+        var method = event.httpMethod;
+
+        if (method === "GET") {
+          if (event.path === "/") {
+            const data = await S3.listObjectsV2({ Bucket: bucketName }).promise();
+            var body = {
+              widgets: data.Contents.map(function(e) { return e.Key })
+            };
+            return {
+              statusCode: 200,
+              headers: {},
+              body: JSON.stringify(body)
+            };
+          }
         }
-    }
 
-    class MyApp extends cdk.App {
-        constructor(argv) {
-            super(argv);
-
-            new MyStack(this, 'hello-cdk');
+        // We only accept GET for now
+        return {
+          statusCode: 400,
+          headers: {},
+          body: "We only accept GET /"
+        };
+      } catch(error) {
+        var body = error.stack || JSON.stringify(error, null, 2);
+        return {
+          statusCode: 400,
+            headers: {},
+            body: JSON.stringify(body)
         }
+      }
     }
-
-    new MyApp().run();
+    ```
+    After done pasting run the following:
+    ```
+    npm run build
+    cdk synth
     ```
 3. Install ApiGateway
     ```
