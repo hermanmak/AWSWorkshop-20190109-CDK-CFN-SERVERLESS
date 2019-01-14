@@ -52,8 +52,9 @@ The CDK is a way to implement your CloudFormation as code.
     ```
 3. Lets ensure this builds and synthesizes corrently as is. Ensure that you are at the base directory of the project `pwd` should output `/home/ec2-user/environment/cdk-cfn-demo-env` then execute
     ```
-    cdk synth --app 'bin/app.js'
-    cdk deploy --app 'bin/app.js'
+    npm run build
+    cdk synth
+    cdk deploy
     ```
 ## Step 2 - Let's create our serverless backend
 We install dependencies such as Api Gateway, S3, and Lambda
