@@ -24,7 +24,8 @@ Since everyone has their own preconfigured laptops with their own customized dev
     npm install -g aws-cdk
     cdk --version
 
-    cd cdk-cfn-demo-env
+    mkdir myFirstCDKApp
+    cd myFirstCDKApp
     cdk init --language typescript
     ```
     
@@ -72,7 +73,7 @@ Since everyone has their own preconfigured laptops with their own customized dev
 
     new MyApp().run();
     ```
-    Ensure that you are at the base directory of the project `pwd` should output `/home/ec2-user/environment/js-sample-app` then execute
+    Ensure that you are at the base directory of the project `pwd` should output `/home/ec2-user/environment/cdk-cfn-demo-env` then execute
     ```
     cdk synth --app 'bin/app.js'
     cdk deploy --app 'bin/app.js'
