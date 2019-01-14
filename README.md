@@ -26,7 +26,6 @@ Since everyone has their own preconfigured laptops with their own customized dev
 
     mkdir myFirstCDKApp
     cd myFirstCDKApp
-    cdk init --language typescript
     ```
     
 ## Step 1 - Start building our cdk template
