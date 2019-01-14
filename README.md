@@ -26,40 +26,18 @@ Since everyone has their own preconfigured laptops with their own customized dev
 
     mkdir myFirstCDKApp
     cd myFirstCDKApp
+    cdk init --language typescript
     ```
     
-## Step 1 - Start building our cdk template
-1. Make our main App file
-    ```
-    mkdir bin
-    touch app.js
-    ```
-2. Open the app.js file and paste the following:
+## Step 1 - Setup the basic CDK App Structure
+The CDK is a way to implement your CloudFormation as code.
+1. We will give out CloudFormation stack we want to create a name, *hello-cdk*
+2. Open the myFirstCDKApp.ts file and paste the following:
     ```
     const cdk = require('@aws-cdk/cdk');
-    const apigateway = require('@aws-cdk/aws-apigateway');
-    const lambda = require('@aws-cdk/aws-lambda');
-
+    
     class MyStack extends cdk.Stack {
-        constructor(parent, id, props) {
-            super(parent, id, props);
-
-            // Define the backend lambda function
-            const backend = new lambda.Function(this, 'myCDKFunction', {
-                runtime: lambda.Runtime.NodeJS810,
-                handler: 'index.handler',
-                code: lambda.Code.asset('resources'),
-            });
-
-            const api = new apigateway.LambdaRestApi(this, 'myCDKAPI', {
-                handler: backend,
-                proxy: false,
-            });
-
-            const items = api.root.addResource('items');
-            items.addMethod('GET');
-            items.addMethod('POST');
-        }
+        constructor(parent, id, props) {}
     }
 
     class MyApp extends cdk.App {
@@ -72,10 +50,17 @@ Since everyone has their own preconfigured laptops with their own customized dev
 
     new MyApp().run();
     ```
-    Ensure that you are at the base directory of the project `pwd` should output `/home/ec2-user/environment/cdk-cfn-demo-env` then execute
+3. Lets ensure this builds and synthesizes corrently as is. Ensure that you are at the base directory of the project `pwd` should output `/home/ec2-user/environment/cdk-cfn-demo-env` then execute
     ```
     cdk synth --app 'bin/app.js'
     cdk deploy --app 'bin/app.js'
     ```
-
+## Step 2 - Let's create our serverless backend
+We install dependencies such as Api Gateway, S3, and Lambda
+1. Execute the following commands to install the necessary dependencies
+    ```
+    npm i @aws-cdk/aws-s3-deployment@0.22.0
+    npm i @aws-cdk/aws-apigateway@0.22.0
+    npm i @aws-cdk/aws-lambda@0.22.0
+    ```
 
