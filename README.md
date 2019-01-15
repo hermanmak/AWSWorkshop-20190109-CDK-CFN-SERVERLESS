@@ -59,8 +59,6 @@ The CDK is a way to implement your CloudFormation as code.
 ## Step 2 - Let's create our serverless backend
 1. Install the node module for Lambda
     ```
-    npm i @aws-cdk/aws-s3-deployment@0.22.0
-    npm i @aws-cdk/aws-apigateway@0.22.0
     npm i @aws-cdk/aws-lambda@0.22.0
     ```
 2. Lets create a new Lambda function, first we will create a directory and file.
@@ -125,4 +123,6 @@ The CDK is a way to implement your CloudFormation as code.
     What we did here was define a new Lambda function which is written in NodeJS. The file name will be `index.js` and the  function which will be called by the Lambda execution will be called `handler`, hence `index.handler`. The code will be stored in this file, under `resources/lambda` and CDK will upload it to S3 and then populate it for us. We added a new additional policy to this Lambda execution role so that it can call SES to send emails out. 
 
 5. Let's now add a API Gateway
-    
+    ```
+    npm i @aws-cdk/aws-apigateway@0.22.0
+    ```
