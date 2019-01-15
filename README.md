@@ -142,7 +142,47 @@ The CDK is a way to implement your CloudFormation as code.
     npm i @aws-cdk/aws-s3@0.22.0
     npm i @aws-cdk/aws-s3-deployment@0.22.0
     ```
-2. Update our stack once more with S3 components. Back in `myFirstCDKApp.ts` update the stack object with:
+2. Populate a html file to be uploaded via S3 for our static website at `resources/website`
+    ```
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script type="text/javascript">         
+    $(document).ready(function() {                      $("#submit").click(function(e) {                 
+    e.preventDefault();                          
+    var name = $("#name").val(),                     
+    email = $("#email").val(),                     
+    message = $("#message").val();                          
+    $.ajax({                     
+    type: "POST",                     
+    url: 'https://<YOUR_URL_HERE>.execute-api.us-east-1.amazonaws.com/prod'              contentType: 'application/json',      
+    data: JSON.stringify({                         
+    'name': name,                         
+    'email': email,                         
+    'message': message                     
+    }),                     
+    success: function(res){                         
+    $('#form-response').html('
+        <div class="alert alert-info" role="alert">Welcome to the queue! Your path will begin shortly...</div>');},                     
+    error: function(){
+     $('#form-response').html('
+        <div class="alert alert-info" role="alert">Something went wrong... We are working on it!</div>');                     }}); }) });      
+
+    </script>
+    <!--THIS IS WHERE DATA IS PULLED FROM S3 TO API TO LAMBDA TO SES-->
+    <div class="form-label-group">
+        <input type="text" id="name" class="form-control" required>
+            <label for="name" class="control-label">Name</label>
+    </div>
+    <div class="form-label-group">
+        <input type="text" id="email" class="form-control" required>
+        <label for="email" class="control-label">Email address</label>
+    </div>
+    <div class="form-label-group">
+        <textarea id="message" name="message" rows="3" class="form-control" placeholder="Message"></textarea>
+    </div>
+    <div id="form-response"></div>
+    <button class="btn btn-lg btn-primary btn-block" id="submit" type="submit" style="background-color:#28547C;">Request Demo</button>
+    ```
+3. Update our stack once more with S3 components. Back in `myFirstCDKApp.ts` update the stack object with:
     ```
     const websiteBucket = new s3.Bucket(this, 'WebsiteBucket', {
         websiteIndexDocument: 'index.html',
