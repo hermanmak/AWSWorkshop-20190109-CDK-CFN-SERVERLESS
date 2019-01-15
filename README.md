@@ -57,11 +57,72 @@ The CDK is a way to implement your CloudFormation as code.
     cdk deploy
     ```
 ## Step 2 - Let's create our serverless backend
-We install dependencies such as Api Gateway, S3, and Lambda
-1. Execute the following commands to install the necessary dependencies
+1. Install the node module for Lambda
     ```
     npm i @aws-cdk/aws-s3-deployment@0.22.0
     npm i @aws-cdk/aws-apigateway@0.22.0
     npm i @aws-cdk/aws-lambda@0.22.0
     ```
+2. Lets create a new Lambda function, first we will create a directory and file.
+    ```
+    mkdir resources
+    mkdir resources/lambda
+    touch index.js
+    ```
+3. Paste the following code in `index.js`, the full path would be something like `/home/ec2-user/environment/cdk-cfn-demo-app/resources/lambda`. Don't forget to save the file afterwards.
+    ```
+    var AWS = require('aws-sdk');
+    var ses = new AWS.SES();
+    var RECEIVERS = ['you@example.com'];
+    var SENDER = 'you@example.com'; // ensure 'sender email' is verified in your Amazon SES
+    exports.handler = (event, context, callback) => {
+        console.log('Received event:', event);
+        sendEmail(event, function (err, data) {
+            var response = {
+                "isBase64Encoded": false,
+                "headers": { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': 'http://www.example.com' },
+                "statusCode": 200,
+                "body": "{\"result\": \"Success.\"}"
+            };
+            callback(err, response);
+        });
+    };
+    function sendEmail (event, done) {
+        var data = JSON.parse(event.body);
 
+        var params = {
+            Destination: {
+                ToAddresses: RECEIVERS
+            },
+            Message: {
+                Body: {
+                    Text: {
+                        Data: 'Name: ' + data.name + '\nEmail: ' + data.email + '\nMessage: ' + data.message,
+                        Charset: 'UTF-8'
+                    }
+                },
+                Subject: {
+                    Data: 'Contact Form inquiry: ' + data.name,
+                    Charset: 'UTF-8'
+                }
+            },
+            Source: SENDER
+        }
+        ses.sendEmail(params, done);
+    }
+    ```
+4. Let's define the Lambda function in our stack. Back in `myFirstCDKApp.ts` update the stack object with:
+    ```
+    const backend = new lambda.Function(this, 'myCDKFunction', {
+        runtime: lambda.Runtime.NodeJS810,
+        handler: 'index.handler',
+        code: lambda.Code.asset('resources/lambda')
+    });
+    backend.addToRolePolicy(new iam.PolicyStatement()
+        .addResource('*')
+        .addAction('ses:*'));
+    ```
+    What we did here was define a new Lambda function which is written in NodeJS. The file name will be `index.js` and the  function which will be called by the Lambda execution will be called `handler`, hence `index.handler`. The code will be stored in this file, under `resources/lambda` and CDK will upload it to S3 and then populate it for us. We added a new additional policy to this Lambda execution role so that it can call SES to send emails out. 
+
+5. Let's now add a API Gateway
+    
