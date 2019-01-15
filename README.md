@@ -137,3 +137,20 @@ The CDK is a way to implement your CloudFormation as code.
     What we did here was define a new API Gateway API. The name of the REST API is `myCDKAPI` and at the base URL you are able to send a POST call.
 
 ## Step 3 - Let's setup a serverless front end
+1. Install the node module for S3 and S3 Deployment
+    ```
+    npm i @aws-cdk/aws-s3@0.22.0
+    npm i @aws-cdk/aws-s3-deployment@0.22.0
+    ```
+2. Update our stack once more with S3 components. Back in `myFirstCDKApp.ts` update the stack object with:
+    ```
+    const websiteBucket = new s3.Bucket(this, 'WebsiteBucket', {
+        websiteIndexDocument: 'index.html',
+        publicReadAccess: false
+    });
+    new s3deploy.BucketDeployment(this, 'DeployWebsite', {
+      source: s3deploy.Source.asset('resources/website'),
+      destinationBucket: websiteBucket,
+    });
+    ```
+    What we did there was create a bucket for static website hosting, we set `index.html` file name to be our main index document for our website. Then we deployed the website by uploading the local files stored at `resources/website` to S3.
