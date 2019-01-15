@@ -120,9 +120,20 @@ The CDK is a way to implement your CloudFormation as code.
         .addResource('*')
         .addAction('ses:*'));
     ```
-    What we did here was define a new Lambda function which is written in NodeJS. The file name will be `index.js` and the  function which will be called by the Lambda execution will be called `handler`, hence `index.handler`. The code will be stored in this file, under `resources/lambda` and CDK will upload it to S3 and then populate it for us. We added a new additional policy to this Lambda execution role so that it can call SES to send emails out. 
+    What we did here was define a new Lambda which is written in NodeJS. The file name will be `index.js` and the  function which will be called by the Lambda execution will be called `handler`, hence `index.handler`. The code will be stored in this file, under `resources/lambda` and CDK will upload it to S3 and then populate it for us. We added a new additional policy to this Lambda execution role so that it can call SES to send emails out. 
 
 5. Install the node module for API Gateway
     ```
     npm i @aws-cdk/aws-apigateway@0.22.0
     ```
+6. Update our stack with API Gateway. Back in `myFirstCDKApp.ts` update the stack object with:
+    ```
+    const api = new apigateway.LambdaRestApi(this, 'myCDKAPI', {
+        handler: backend,
+        proxy: false,
+    });
+    api.root.addMethod('POST');
+    ```
+    What we did here was define a new API Gateway API. The name of the REST API is `myCDKAPI` and at the base URL you are able to send a POST call.
+
+## Step 3 - Let's setup a serverless front end
