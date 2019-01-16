@@ -9,6 +9,7 @@ One of major reasons for unforseen outages and customer impacting issues is due 
 
 #### Pre-reqs
 1. A **personal** AWS Account
+2. A **personal** email address
 
 ## Step 0 - Setup a clean development environment
 Since everyone has their own preconfigured laptops with their own customized development environments, things could get pretty messy. So, lets use AWS Cloud9 for the sake of this lab, AWS Cloud9 provides a hosted IDE to write, run and debug code. It also comes with awscli preinstalled!
