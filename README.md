@@ -56,7 +56,15 @@ The CDK is a way to implement your CloudFormation as code.
     cdk synth
     cdk deploy
     ```
-## Step 2 - Let's create our serverless backend
+## Step 2 - Setup Amazon Simple Email Service
+For the purposes of our demo we will use Amazon Simple Email Service to send an email to yourself, similar to how we may send a sample verfication code during signup as your favorite website.
+![GitHub Logo](/images/ses-setup.png)
+1. In the AWS Console, top left, search or click on Simple Email Service.
+2. On the right hand side click `Email Addresses`.
+3. At the top click `Verify a New Email Address`.
+4. Add your email here and verify by going to your own email inbox and clicking the confirm link. Save this email as it will be used in Step 3.3
+
+## Step 3 - Let's create our serverless backend
 1. Install the node module for Lambda
     ```
     npm i @aws-cdk/aws-lambda@0.22.0
