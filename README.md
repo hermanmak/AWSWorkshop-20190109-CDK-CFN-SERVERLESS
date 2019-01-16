@@ -1,4 +1,4 @@
-# AWSWorkshop-CDK-CFN-SERVERLESS
+# AWS Cloud Development Kit Workshop
 This workshop is intended to demonstrate the use of AWS CloudDevelopmentKit, hereby referred to as AWS CDK. Using AWS CDK we will go through step by step how to create a serverless web application from scratch. 
 
 #### What is AWS CDK?
