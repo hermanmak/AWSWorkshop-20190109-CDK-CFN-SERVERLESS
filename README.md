@@ -221,3 +221,4 @@ For the purposes of our demo we will use Amazon Simple Email Service to send an 
     ```
     
 # Congrats, you are now a AWS CDK user!
+Consider storing the cloudformation output in git, along with the rest of the CDK App. `cdk synth > raw-cfn.txt`
