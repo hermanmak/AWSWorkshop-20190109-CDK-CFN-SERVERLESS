@@ -7,6 +7,10 @@ This workshop is intended to demonstrate the use of AWS CloudDevelopmentKit, her
 #### Why should I use AWS CDK, or infrastructure as code?!?!
 One of major reasons for unforseen outages and customer impacting issues is due to lack of change management.
 
+#### What will we build?
+We will build a simple serverless architecture that sends emails to a specified email address. This will start at a static website, go through a api gateway and then send and email.
+![Architecture](/images/architecture.png)
+
 #### Pre-reqs
 1. A **personal** AWS Account
 2. A **personal** email address
