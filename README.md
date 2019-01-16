@@ -67,53 +67,47 @@ The CDK is a way to implement your CloudFormation as code.
     mkdir resources/lambda
     touch index.js
     ```
-3. Paste the following code in `index.js`, the full path would be something like `/home/ec2-user/environment/cdk-cfn-demo-app/resources/lambda`. Don't forget to save the file afterwards. Make sure you replace `<API_GATEWAY_ENDPOINT>` with your own.
+3. Paste the following code in `index.js`, the full path would be something like `/home/ec2-user/environment/cdk-cfn-demo-app/resources/lambda`. Don't forget to save the file afterwards. Make sure you replace `<YOUR_EMAIL_HERE>` with your own.
     ```
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-    <script type="text/javascript">         
-    $(document).ready(function() {
-        $("#submit").click(function(e) {
-            e.preventDefault();
+    var AWS = require('aws-sdk');
+    var ses = new AWS.SES();
+    var RECEIVERS = ['<YOUR_EMAIL_HERE>];
+    var SENDER = '<YOUR_EMAIL_HERE>'; // ensure 'sender email' is verified in your Amazon SES
+    exports.handler = (event, context, callback) => {
+        console.log('Received event:', event);
+        sendEmail(event, function (err, data) {
+            var response = {
+                "isBase64Encoded": false,
+                "headers": { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+                "statusCode": 200,
+                "body": "{\"result\": \"Success.\"}"
+            };
+            callback(err, response);
+        });
+    };
+    function sendEmail (event, done) {
+        var data = JSON.parse(event.body);
 
-            var name = $("#name").val();            
-            var email = $("#email").val();                 
-            var message = $("#message").val();
-
-            $.ajax({                     
-                type: 'POST',                     
-                url: 'https://<API_GATEWAY_ENDPOINT>.execute-api.us-east-1.amazonaws.com/prod',          
-                contentType: 'application/json',
-                data: JSON.stringify({                         
-                    'name': name,                         
-                    'email': email,                         
-                    'message': message                     
-                }),                     
-                success: function(res){                         
-                    $('#form-response').html('<div class="alert alert-info" role="alert">Now sending onfirmation email...</div>');
-                },                     
-                error: function(){
-                    $('#form-response').html('<div class="alert alert-info" role="alert">Something went wrong... We are working on it!</div>');                     
+        var params = {
+            Destination: {
+                ToAddresses: RECEIVERS
+            },
+            Message: {
+                Body: {
+                    Text: {
+                        Data: 'Name: ' + data.name + '\nEmail: ' + data.email + '\nMessage: ' + data.message,
+                        Charset: 'UTF-8'
+                    }
+                },
+                Subject: {
+                    Data: 'Contact Form inquiry: ' + data.name,
+                    Charset: 'UTF-8'
                 }
-            }); 
-        }) 
-    });      
-    </script>
-
-    <!--THIS IS WHERE DATA IS PULLED FROM S3 TO API TO LAMBDA TO SES-->
-    <link rel="shortcut icon" href="">
-    <div class="form-label-group">
-        <input type="text" id="name" class="form-control" required>
-            <label for="name" class="control-label">Name</label>
-    </div>
-    <div class="form-label-group">
-        <input type="text" id="email" class="form-control" required>
-        <label for="email" class="control-label">Email address</label>
-    </div>
-    <div class="form-label-group">
-        <textarea id="message" name="message" rows="3" class="form-control" placeholder="Message"></textarea>
-    </div>
-    <div id="form-response"></div>
-    <button class="btn btn-lg btn-primary btn-block" id="submit" type="submit" style="background-color:#28547C;">Request Demo</button>
+            },
+            Source: SENDER
+        }
+        ses.sendEmail(params, done);
+    }
     ```
 4. Let's define the Lambda function in our stack. Back in `myFirstCDKApp.ts` update the stack object with:
     ```
