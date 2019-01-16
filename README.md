@@ -12,6 +12,7 @@ One of major reasons for unforseen outages and customer impacting issues is due 
 
 ## Step 0 - Setup a clean development environment
 Since everyone has their own preconfigured laptops with their own customized development environments, things could get pretty messy. So, lets use AWS Cloud9 for the sake of this lab, AWS Cloud9 provides a hosted IDE to write, run and debug code. It also comes with awscli preinstalled!
+![AWS Cloud9 Console](/images/c9-console.png)
 
 1. In the console, the Services button in the top left will reveal a dropdown with all the services.
 2. Find or search for **Cloud9**.
@@ -58,7 +59,7 @@ The CDK is a way to implement your CloudFormation as code.
     ```
 ## Step 2 - Setup Amazon Simple Email Service
 For the purposes of our demo we will use Amazon Simple Email Service to send an email to yourself, similar to how we may send a sample verfication code during signup as your favorite website.
-![GitHub Logo](/images/ses-setup.png)
+![Amazon Simple Email Service](/images/ses-setup.png)
 1. On the right hand side click `Email Addresses`.
 3. At the top click `Verify a New Email Address`.
 4. Add your email here and verify by going to your own email inbox and clicking the confirm link. Save this email as it will be used in Step 3.3
