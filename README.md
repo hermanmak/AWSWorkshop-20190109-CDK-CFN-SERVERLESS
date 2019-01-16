@@ -67,47 +67,53 @@ The CDK is a way to implement your CloudFormation as code.
     mkdir resources/lambda
     touch index.js
     ```
-3. Paste the following code in `index.js`, the full path would be something like `/home/ec2-user/environment/cdk-cfn-demo-app/resources/lambda`. Don't forget to save the file afterwards.
+3. Paste the following code in `index.js`, the full path would be something like `/home/ec2-user/environment/cdk-cfn-demo-app/resources/lambda`. Don't forget to save the file afterwards. Make sure you replace `<API_GATEWAY_ENDPOINT>` with your own.
     ```
-    var AWS = require('aws-sdk');
-    var ses = new AWS.SES();
-    var RECEIVERS = ['you@example.com'];
-    var SENDER = 'you@example.com'; // ensure 'sender email' is verified in your Amazon SES
-    exports.handler = (event, context, callback) => {
-        console.log('Received event:', event);
-        sendEmail(event, function (err, data) {
-            var response = {
-                "isBase64Encoded": false,
-                "headers": { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': 'http://www.example.com' },
-                "statusCode": 200,
-                "body": "{\"result\": \"Success.\"}"
-            };
-            callback(err, response);
-        });
-    };
-    function sendEmail (event, done) {
-        var data = JSON.parse(event.body);
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script type="text/javascript">         
+    $(document).ready(function() {
+        $("#submit").click(function(e) {
+            e.preventDefault();
 
-        var params = {
-            Destination: {
-                ToAddresses: RECEIVERS
-            },
-            Message: {
-                Body: {
-                    Text: {
-                        Data: 'Name: ' + data.name + '\nEmail: ' + data.email + '\nMessage: ' + data.message,
-                        Charset: 'UTF-8'
-                    }
-                },
-                Subject: {
-                    Data: 'Contact Form inquiry: ' + data.name,
-                    Charset: 'UTF-8'
+            var name = $("#name").val();            
+            var email = $("#email").val();                 
+            var message = $("#message").val();
+
+            $.ajax({                     
+                type: 'POST',                     
+                url: 'https://<API_GATEWAY_ENDPOINT>.execute-api.us-east-1.amazonaws.com/prod',          
+                contentType: 'application/json',
+                data: JSON.stringify({                         
+                    'name': name,                         
+                    'email': email,                         
+                    'message': message                     
+                }),                     
+                success: function(res){                         
+                    $('#form-response').html('<div class="alert alert-info" role="alert">Now sending onfirmation email...</div>');
+                },                     
+                error: function(){
+                    $('#form-response').html('<div class="alert alert-info" role="alert">Something went wrong... We are working on it!</div>');                     
                 }
-            },
-            Source: SENDER
-        }
-        ses.sendEmail(params, done);
-    }
+            }); 
+        }) 
+    });      
+    </script>
+
+    <!--THIS IS WHERE DATA IS PULLED FROM S3 TO API TO LAMBDA TO SES-->
+    <link rel="shortcut icon" href="">
+    <div class="form-label-group">
+        <input type="text" id="name" class="form-control" required>
+            <label for="name" class="control-label">Name</label>
+    </div>
+    <div class="form-label-group">
+        <input type="text" id="email" class="form-control" required>
+        <label for="email" class="control-label">Email address</label>
+    </div>
+    <div class="form-label-group">
+        <textarea id="message" name="message" rows="3" class="form-control" placeholder="Message"></textarea>
+    </div>
+    <div id="form-response"></div>
+    <button class="btn btn-lg btn-primary btn-block" id="submit" type="submit" style="background-color:#28547C;">Request Demo</button>
     ```
 4. Let's define the Lambda function in our stack. Back in `myFirstCDKApp.ts` update the stack object with:
     ```
@@ -142,32 +148,40 @@ The CDK is a way to implement your CloudFormation as code.
     npm i @aws-cdk/aws-s3@0.22.0
     npm i @aws-cdk/aws-s3-deployment@0.22.0
     ```
-2. Populate a html file to be uploaded via S3 for our static website at `resources/website`
+2. Populate a html file to be uploaded via S3 for our static website at `resources/website`, be sure to replace `<YOUR_GATEWAY_ENDPOINT>` with your own email.
     ```
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <script type="text/javascript">         
-    $(document).ready(function() {                      $("#submit").click(function(e) {                 
-    e.preventDefault();                          
-    var name = $("#name").val(),                     
-    email = $("#email").val(),                     
-    message = $("#message").val();                          
-    $.ajax({                     
-    type: "POST",                     
-    url: 'https://<YOUR_URL_HERE>.execute-api.us-east-1.amazonaws.com/prod'              contentType: 'application/json',      
-    data: JSON.stringify({                         
-    'name': name,                         
-    'email': email,                         
-    'message': message                     
-    }),                     
-    success: function(res){                         
-    $('#form-response').html('
-        <div class="alert alert-info" role="alert">Welcome to the queue! Your path will begin shortly...</div>');},                     
-    error: function(){
-     $('#form-response').html('
-        <div class="alert alert-info" role="alert">Something went wrong... We are working on it!</div>');                     }}); }) });      
+    $(document).ready(function() {
+        $("#submit").click(function(e) {
+            e.preventDefault();
 
+            var name = $("#name").val();            
+            var email = $("#email").val();                 
+            var message = $("#message").val();
+
+            $.ajax({                     
+                type: 'POST',                     
+                url: 'https://<YOUR_GATEWAY_ENDPOINT>.execute-api.us-east-1.amazonaws.com/prod',          
+                contentType: 'application/json',
+                data: JSON.stringify({                         
+                    'name': name,                         
+                    'email': email,                         
+                    'message': message                     
+                }),                     
+                success: function(res){                         
+                    $('#form-response').html('<div class="alert alert-info" role="alert">Now sending onfirmation email...</div>');
+                },                     
+                error: function(){
+                    $('#form-response').html('<div class="alert alert-info" role="alert">Something went wrong... We are working on it!</div>');                     
+                }
+            }); 
+        }) 
+    });      
     </script>
+
     <!--THIS IS WHERE DATA IS PULLED FROM S3 TO API TO LAMBDA TO SES-->
+    <link rel="shortcut icon" href="">
     <div class="form-label-group">
         <input type="text" id="name" class="form-control" required>
             <label for="name" class="control-label">Name</label>
@@ -181,16 +195,5 @@ The CDK is a way to implement your CloudFormation as code.
     </div>
     <div id="form-response"></div>
     <button class="btn btn-lg btn-primary btn-block" id="submit" type="submit" style="background-color:#28547C;">Request Demo</button>
-    ```
-3. Update our stack once more with S3 components. Back in `myFirstCDKApp.ts` update the stack object with:
-    ```
-    const websiteBucket = new s3.Bucket(this, 'WebsiteBucket', {
-        websiteIndexDocument: 'index.html',
-        publicReadAccess: false
-    });
-    new s3deploy.BucketDeployment(this, 'DeployWebsite', {
-      source: s3deploy.Source.asset('resources/website'),
-      destinationBucket: websiteBucket,
-    });
     ```
     What we did there was create a bucket for static website hosting, we set `index.html` file name to be our main index document for our website. Then we deployed the website by uploading the local files stored at `resources/website` to S3.
