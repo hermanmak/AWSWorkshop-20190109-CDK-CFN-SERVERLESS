@@ -1,0 +1,367 @@
+Resources:
+  myCDKFunctionServiceRole79FE7E85:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: HelloCdkStack/myCDKFunction/ServiceRole/Resource
+  myCDKFunctionServiceRoleDefaultPolicyECD99E7E:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action: ses:*
+            Effect: Allow
+            Resource: "*"
+        Version: "2012-10-17"
+      PolicyName: myCDKFunctionServiceRoleDefaultPolicyECD99E7E
+      Roles:
+        - Ref: myCDKFunctionServiceRole79FE7E85
+    Metadata:
+      aws:cdk:path: HelloCdkStack/myCDKFunction/ServiceRole/DefaultPolicy/Resource
+  myCDKFunctionD81961F2:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: myCDKFunctionCodeS3BucketA9E21858
+        S3Key:
+          Fn::Join:
+            - ""
+            - - Fn::Select:
+                  - 0
+                  - Fn::Split:
+                      - "||"
+                      - Ref: myCDKFunctionCodeS3VersionKeyA4BF3BB3
+              - Fn::Select:
+                  - 1
+                  - Fn::Split:
+                      - "||"
+                      - Ref: myCDKFunctionCodeS3VersionKeyA4BF3BB3
+      Handler: index.handler
+      Role:
+        Fn::GetAtt:
+          - myCDKFunctionServiceRole79FE7E85
+          - Arn
+      Runtime: nodejs8.10
+    DependsOn:
+      - myCDKFunctionServiceRole79FE7E85
+      - myCDKFunctionServiceRoleDefaultPolicyECD99E7E
+    Metadata:
+      aws:cdk:path: HelloCdkStack/myCDKFunction/Resource
+      aws:asset:path: /home/ec2-user/environment/github/AWSWorkshop-CDK-CFN-SERVERLESS/cdk-cfn-demo-app-sample/resources/lambda
+      aws:asset:property: Code
+  myCDKFunctionApiPermissionPOSTE96CE7D1:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Ref: myCDKFunctionD81961F2
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:"
+            - Ref: AWS::Region
+            - ":"
+            - Ref: AWS::AccountId
+            - ":"
+            - Ref: myCDKAPI2D090D9F
+            - /
+            - Ref: myCDKAPIDeploymentStageprod95F1B803
+            - /POST/
+    Metadata:
+      aws:cdk:path: HelloCdkStack/myCDKFunction/ApiPermission.POST..
+  myCDKFunctionApiPermissionTestPOST85D6DADB:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName:
+        Ref: myCDKFunctionD81961F2
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Join:
+          - ""
+          - - "arn:"
+            - Ref: AWS::Partition
+            - ":execute-api:"
+            - Ref: AWS::Region
+            - ":"
+            - Ref: AWS::AccountId
+            - ":"
+            - Ref: myCDKAPI2D090D9F
+            - /test-invoke-stage/POST/
+    Metadata:
+      aws:cdk:path: HelloCdkStack/myCDKFunction/ApiPermission.Test.POST..
+  myCDKAPI2D090D9F:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: myCDKAPI
+    Metadata:
+      aws:cdk:path: HelloCdkStack/myCDKAPI/Resource
+  myCDKAPIDeployment96A775AB5eadb4184cae3e403cde3a669df1b1a5:
+    Type: AWS::ApiGateway::Deployment
+    Properties:
+      RestApiId:
+        Ref: myCDKAPI2D090D9F
+      Description: Automatically created by the RestApi construct
+    DependsOn:
+      - myCDKAPIPOST4C6D341E
+    Metadata:
+      aws:cdk:path: HelloCdkStack/myCDKAPI/Deployment/Resource
+  myCDKAPIDeploymentStageprod95F1B803:
+    Type: AWS::ApiGateway::Stage
+    Properties:
+      RestApiId:
+        Ref: myCDKAPI2D090D9F
+      DeploymentId:
+        Ref: myCDKAPIDeployment96A775AB5eadb4184cae3e403cde3a669df1b1a5
+      StageName: prod
+    Metadata:
+      aws:cdk:path: HelloCdkStack/myCDKAPI/DeploymentStage.prod/Resource
+  myCDKAPICloudWatchRole513FE537:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: apigateway.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs
+    Metadata:
+      aws:cdk:path: HelloCdkStack/myCDKAPI/CloudWatchRole/Resource
+  myCDKAPIAccountBC844EAC:
+    Type: AWS::ApiGateway::Account
+    Properties:
+      CloudWatchRoleArn:
+        Fn::GetAtt:
+          - myCDKAPICloudWatchRole513FE537
+          - Arn
+    DependsOn:
+      - myCDKAPI2D090D9F
+    Metadata:
+      aws:cdk:path: HelloCdkStack/myCDKAPI/Account
+  myCDKAPIPOST4C6D341E:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: POST
+      ResourceId:
+        Fn::GetAtt:
+          - myCDKAPI2D090D9F
+          - RootResourceId
+      RestApiId:
+        Ref: myCDKAPI2D090D9F
+      AuthorizationType: NONE
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri:
+          Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - ":apigateway:"
+              - Ref: AWS::Region
+              - :lambda:path/2015-03-31/functions/
+              - Fn::GetAtt:
+                  - myCDKFunctionD81961F2
+                  - Arn
+              - /invocations
+    Metadata:
+      aws:cdk:path: HelloCdkStack/myCDKAPI/POST/Resource
+  WebsiteBucket75C24D94:
+    Type: AWS::S3::Bucket
+    Properties:
+      WebsiteConfiguration:
+        IndexDocument: index.html
+    DeletionPolicy: Retain
+    Metadata:
+      aws:cdk:path: HelloCdkStack/WebsiteBucket/Resource
+  DeployWebsiteCustomResourceD116527B:
+    Type: Custom::CDKBucketDeployment
+    Properties:
+      ServiceToken:
+        Fn::GetAtt:
+          - CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536
+          - Arn
+      SourceBucketName:
+        Ref: DeployWebsiteAssetS3Bucket39B9A580
+      SourceObjectKey:
+        Fn::Join:
+          - ""
+          - - Fn::Select:
+                - 0
+                - Fn::Split:
+                    - "||"
+                    - Ref: DeployWebsiteAssetS3VersionKey97D3A3E5
+            - Fn::Select:
+                - 1
+                - Fn::Split:
+                    - "||"
+                    - Ref: DeployWebsiteAssetS3VersionKey97D3A3E5
+      DestinationBucketName:
+        Ref: WebsiteBucket75C24D94
+    Metadata:
+      aws:cdk:path: HelloCdkStack/DeployWebsite/CustomResource
+  CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+        Version: "2012-10-17"
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+    Metadata:
+      aws:cdk:path: HelloCdkStack/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/ServiceRole/Resource
+  CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRoleDefaultPolicy88902FDF:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+            Effect: Allow
+            Resource:
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":s3:::"
+                    - Ref: DeployWebsiteAssetS3Bucket39B9A580
+              - Fn::Join:
+                  - ""
+                  - - "arn:"
+                    - Ref: AWS::Partition
+                    - ":s3:::"
+                    - Ref: DeployWebsiteAssetS3Bucket39B9A580
+                    - /*
+          - Action:
+              - s3:GetObject*
+              - s3:GetBucket*
+              - s3:List*
+              - s3:DeleteObject*
+              - s3:PutObject*
+              - s3:Abort*
+            Effect: Allow
+            Resource:
+              - Fn::GetAtt:
+                  - WebsiteBucket75C24D94
+                  - Arn
+              - Fn::Join:
+                  - ""
+                  - - Fn::GetAtt:
+                        - WebsiteBucket75C24D94
+                        - Arn
+                    - /*
+        Version: "2012-10-17"
+      PolicyName: CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRoleDefaultPolicy88902FDF
+      Roles:
+        - Ref: CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265
+    Metadata:
+      aws:cdk:path: HelloCdkStack/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/ServiceRole/DefaultPolicy/Resource
+  CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket:
+          Ref: CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CCodeS3Bucket6E5FB2B7
+        S3Key:
+          Fn::Join:
+            - ""
+            - - Fn::Select:
+                  - 0
+                  - Fn::Split:
+                      - "||"
+                      - Ref: CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CCodeS3VersionKey426156C0
+              - Fn::Select:
+                  - 1
+                  - Fn::Split:
+                      - "||"
+                      - Ref: CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CCodeS3VersionKey426156C0
+      Handler: index.handler
+      Role:
+        Fn::GetAtt:
+          - CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265
+          - Arn
+      Runtime: python3.6
+      Timeout: 900
+    DependsOn:
+      - CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265
+      - CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRoleDefaultPolicy88902FDF
+    Metadata:
+      aws:cdk:path: HelloCdkStack/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/Resource
+      aws:asset:path: /home/ec2-user/environment/github/AWSWorkshop-CDK-CFN-SERVERLESS/cdk-cfn-demo-app-sample/node_modules/@aws-cdk/aws-s3-deployment/lambda/bundle.zip
+      aws:asset:property: Code
+  CDKMetadata:
+    Type: AWS::CDK::Metadata
+    Properties:
+      Modules: aws-cdk=0.22.0,@aws-cdk/assets=0.22.0,@aws-cdk/aws-apigateway=0.22.0,@aws-cdk/aws-cloudformation=0.22.0,@aws-cdk/aws-cloudwatch=0.22.0,@aws-cdk/aws-codepipeline-api=0.22.0,@aws-cdk/aws-ec2=0.22.0,@aws-cdk/aws-events=0.22.0,@aws-cdk/aws-iam=0.22.0,@aws-cdk/aws-kms=0.22.0,@aws-cdk/aws-lambda=0.22.0,@aws-cdk/aws-s3=0.22.0,@aws-cdk/aws-s3-deployment=0.22.0,@aws-cdk/aws-s3-notifications=0.22.0,@aws-cdk/aws-sqs=0.22.0,@aws-cdk/cdk=0.22.0,@aws-cdk/cx-api=0.22.0,jsii-runtime=node.js/v10.15.0
+Parameters:
+  myCDKFunctionCodeS3BucketA9E21858:
+    Type: String
+    Description: S3 bucket for asset "HelloCdkStack/myCDKFunction/Code"
+  myCDKFunctionCodeS3VersionKeyA4BF3BB3:
+    Type: String
+    Description: S3 key for asset version "HelloCdkStack/myCDKFunction/Code"
+  DeployWebsiteAssetS3Bucket39B9A580:
+    Type: String
+    Description: S3 bucket for asset "HelloCdkStack/DeployWebsite/Asset"
+  DeployWebsiteAssetS3VersionKey97D3A3E5:
+    Type: String
+    Description: S3 key for asset version "HelloCdkStack/DeployWebsite/Asset"
+  CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CCodeS3Bucket6E5FB2B7:
+    Type: String
+    Description: S3 bucket for asset
+      "HelloCdkStack/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/Code"
+  CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CCodeS3VersionKey426156C0:
+    Type: String
+    Description: S3 key for asset version
+      "HelloCdkStack/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/Code"
+Outputs:
+  myCDKAPIEndpoint0DED604A:
+    Value:
+      Fn::Join:
+        - ""
+        - - https://
+          - Ref: myCDKAPI2D090D9F
+          - .execute-api.
+          - Ref: AWS::Region
+          - "."
+          - Ref: AWS::URLSuffix
+          - /
+          - Ref: myCDKAPIDeploymentStageprod95F1B803
+          - /
+    Export:
+      Name: HelloCdkStack:myCDKAPIEndpoint0DED604A
+
