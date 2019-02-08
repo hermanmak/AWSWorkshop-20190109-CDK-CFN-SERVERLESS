@@ -74,12 +74,14 @@ For the purposes of our demo we will use Amazon Simple Email Service to send an 
     ```
     npm i @aws-cdk/aws-lambda@0.22.0
     ```
+    ![Add Lambda dependency](/images/addlambda.png)
 2. Lets create a new Lambda function, first we will create a directory and file.
     ```
     mkdir resources
     mkdir resources/lambda
     touch index.js
     ```
+    ![Add Lambda function](/images/addlambdafunction.png)
 3. Paste the following code in `index.js`, the full path would be something like `/home/ec2-user/environment/cdk-cfn-demo-app/resources/lambda`. Don't forget to save the file afterwards. Make sure you replace `<YOUR_EMAIL_HERE>` with your own.
     ```
     var AWS = require('aws-sdk');
