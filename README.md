@@ -56,7 +56,7 @@ The CDK is a way to implement your CloudFormation as code.
 
     new MyApp().run();
     ```
-3. Lets ensure this builds and synthesizes corrently as is. Ensure that you are at the base directory of the project `pwd` should output `/home/ec2-user/environment/cdk-cfn-demo-env` then execute
+3. Lets ensure this builds and synthesizes correctly as is. Ensure that you are at the base directory of the project `pwd` should output `/home/ec2-user/environment/cdk-cfn-demo-env` then execute
     ```
     npm run build
     cdk synth
@@ -219,6 +219,12 @@ For the purposes of our demo we will use Amazon Simple Email Service to send an 
       source: s3deploy.Source.asset('resources/website'),
       destinationBucket: websiteBucket,
     });
+    ```
+4. Lets ensure this builds and synthesizes correctly as is. Ensure that you are at the base directory of the project `pwd` should output `/home/ec2-user/environment/cdk-cfn-demo-env` then execute
+    ```
+    npm run build
+    cdk synth
+    cdk deploy
     ```
     
 ## Step 4 - After the lab ends
